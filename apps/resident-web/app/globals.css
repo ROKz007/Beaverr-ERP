@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #1a3c5e;
+  --accent: #0f7173;
+  --warm: #f4a261;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --destructive: #ef4444;
+  --muted: #94a3b8;
+  --background: #f8fafc;
+}
+
+body {
+  background: var(--background);
+  color: var(--primary);
+  font-family: var(--font-body), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading), sans-serif;
+}

@@ -1,0 +1,65 @@
+# 🦫 Beaverr — Implementation Plan
+
+Phase-by-phase build plan for the MVP. See `Project Description.md` for full product scope and `Folder Structure.md` / `Backend Development.md` / `Frontend Development.md` for the detailed architecture each phase implements against.
+
+## Context
+
+Beaverr's `/docs` describe an enterprise-grade, multi-tenant society management SaaS (18 backend modules, 4 frontend apps, AI microservice, K8s/Terraform). Building the entire documented platform is a multi-quarter effort for a solo developer, so scope is trimmed to a realistic MVP (see `Project Description.md` → MVP Scope (v1)).
+
+**Standing decisions:**
+- Web only for MVP (`resident-web` + `admin-web`); `mobile-app`/`guard-app` deferred, gate scanning done via a "Gate Console" page in `admin-web`.
+- No separate Python AI microservice; auto-assign/reputation scoring run as plain TypeScript.
+- Docs edited in place with 🔮 *Post-MVP* tags rather than a separate roadmap doc.
+
+---
+
+## Phase 0 — Trim the docs to MVP scope
+
+- [x] Edit all four docs (`Project Description.md`, `Folder Structure.md`, `Backend Development.md`, `Frontend Development.md`) in place: MVP Scope (v1) section, roadmap compressed to 5 MVP phases, every deferred item tagged 🔮 *Post-MVP* rather than deleted.
+
+## Phase 1 — Foundations
+
+- [x] Shared types (`packages/types`) — User/Role, Society, Unit, `ApiResponse<T>` envelope.
+- [x] Prisma schema (`services/api/prisma/schema.prisma`) — models needed through Phase 4 (`Society`, `User`, `Unit`, `Department`, `Service`, `Worker`, `ServiceBooking`, `Grievance`, `Visitor`, `Payment`, `Notification`, `NotificationPreference`). Marketplace and Phase-5-stretch models deliberately deferred until those phases start.
+- [x] Backend infra — env/database/redis config, logger, `AppError`, pagination, auth/rbac/tenancy/error middleware, root `docker-compose.yml` (Postgres 16 + Redis 7), `.env.example`.
+- [x] `auth` module — OTP (pluggable provider, console default), JWT access/refresh, guard username+password login.
+- [x] `societies` module — 6-digit code, departments, gate-module toggle.
+- [x] `residents` + `units` modules — CRUD, ownership transfer, CSV bulk import.
+- [x] `prisma/seed.ts` — demo society, admin, guard, resident, units.
+- [x] Frontend scaffolding — Next.js 15 apps for `resident-web`/`admin-web`, `packages/api-client`, brand tokens (Plus Jakarta Sans + Geist), shared UI components (`packages/ui`: Button, Input, Label, Card), styled auth flow and dashboard shells for both apps.
+- [x] Small fixes — dropped redundant `redis` npm package (kept `ioredis`), pinned `prisma`/`@prisma/client` to `7.10.0`, swapped to `bcryptjs`, added `@prisma/adapter-pg` + `pg`.
+
+**Verification:** `docker compose up` brings up Postgres + Redis; `pnpm --filter api dev` boots; `prisma migrate dev` + seed succeed; send-otp → verify-otp → me passes for a seeded resident; guard-login works; `resident-web`/`admin-web` boot, show login, and a real registration flow works end-to-end against the real API.
+
+## Phase 2 — Core service loop
+
+`services` (catalogue, Postgres search), `bookings` (state machine, SLA engine via BullMQ, rule-based auto-assign), `workers` (profiles, scheduling, reputation score). Resident-web service catalogue/booking flow/tracking (Socket.io status, no live GPS map). Admin-web residents/units/services/workers tables, bookings admin view + manual assign.
+
+- [x] `services` module — catalogue CRUD, Postgres full-text-style search (name/description/subcategory), category filter, pagination. Catalogue browsing open to any authenticated role; create/update/delete gated to admins.
+- [ ] `bookings` module — state machine, SLA engine, auto-assign.
+- [ ] `workers` module — profiles, scheduling, reputation score.
+- [ ] Resident-web service catalogue / booking flow / tracking.
+- [ ] Admin-web management tables + bookings admin view.
+
+**Reminder for this phase:** keep dense data tables (`TanStack Table` grids, Gate Console) visually minimal and fast — motion/blur belongs on nav, hero, and auth screens, not on screens used many times a day.
+
+## Phase 3 — Trust & safety loop
+
+`grievances` (lifecycle, escalation), `visitors` (QR, walk-in, blacklist — via Gate Console), `notifications` (in-app + email only). Resident-web + admin-web pages for both.
+
+## Phase 4 — Money & basic reporting
+
+`payments` (Razorpay test mode, webhooks, invoicing, dues/reminders), `analytics` (dashboard + reports straight from Postgres).
+
+## Phase 5 — Stretch (only if time remains)
+
+Events board, announcements, documents, community forum.
+
+## Explicitly deferred (Future Extensions in docs, not built now)
+
+Marketplace/Community Economy Layer, real ML-based AI microservice, `mobile-app` + `guard-app` (Expo), Digio/Signzy KYC, WhatsApp Business API, Mixpanel, Kubernetes + Terraform, Meilisearch/TimescaleDB/pgvector, OpenTelemetry, full Prometheus/Grafana/Loki stack.
+
+## Verification
+
+- **Phase 1:** see above.
+- **Each later phase:** unit/integration tests pass for that module; manual browser walkthrough of the relevant Key E2E Scenario from `Project Description.md`'s Testing Strategy section.
