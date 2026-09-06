@@ -4,4 +4,7 @@ export * from "./unit.types";
 export * from "./service.types";
 export * from "./worker.types";
 export * from "./booking.types";
+export * from "./notification.types";
+export * from "./grievance.types";
+export * from "./visitor.types";
 export * from "./api.types";

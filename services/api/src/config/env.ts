@@ -13,6 +13,9 @@ const envSchema = z.object({
   OTP_PROVIDER: z.enum(["console", "msg91"]).default("console"),
   MSG91_AUTH_KEY: z.string().optional(),
   MSG91_TEMPLATE_ID: z.string().optional(),
+  EMAIL_PROVIDER: z.enum(["console", "smtp"]).default("console"),
+  SMTP_URL: z.string().optional(),
+  EMAIL_FROM: z.string().default("noreply@beaverr.demo"),
   FRONTEND_URLS: z.string().default("http://localhost:3000,http://localhost:3001"),
 });
 

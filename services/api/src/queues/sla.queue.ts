@@ -1,11 +1,8 @@
 import { Queue, Worker as QueueWorker } from "bullmq";
-import IORedis from "ioredis";
-import { env } from "../config/env";
 import { prisma } from "../config/database";
 import { logger } from "../utils/logger";
-
-// BullMQ needs its own connection (maxRetriesPerRequest: null), separate from the shared app redis client.
-const connection = new IORedis(env.REDIS_URL, { maxRetriesPerRequest: null });
+import { notificationsService } from "../modules/notifications/notifications.service";
+import { queueConnection as connection } from "./connection";
 
 export const slaQueue = new Queue("booking-sla", { connection });
 
@@ -28,14 +25,12 @@ export function startSlaWorker() {
       const society = await prisma.society.findUnique({ where: { id: booking.societyId } });
       if (!society?.adminUserId) return;
 
-      await prisma.notification.create({
-        data: {
-          societyId: booking.societyId,
-          userId: society.adminUserId,
-          category: "SLA_BREACH",
-          title: "Booking SLA breached",
-          body: `Booking ${booking.id} is still ${booking.status} past its SLA window.`,
-        },
+      await notificationsService.create({
+        societyId: booking.societyId,
+        userId: society.adminUserId,
+        category: "SLA_BREACH",
+        title: "Booking SLA breached",
+        body: `Booking ${booking.id} is still ${booking.status} past its SLA window.`,
       });
       logger.warn(`SLA breach: booking ${booking.id} still ${booking.status}`);
     },

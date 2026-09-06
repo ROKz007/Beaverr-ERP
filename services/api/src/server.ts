@@ -4,10 +4,12 @@ import { env } from "./config/env";
 import { logger } from "./utils/logger";
 import { initSocket } from "./realtime/socket";
 import { startSlaWorker } from "./queues/sla.queue";
+import { startGrievanceEscalationWorker } from "./queues/grievance-escalation.queue";
 
 const httpServer = http.createServer(app);
 initSocket(httpServer);
 startSlaWorker();
+startGrievanceEscalationWorker();
 
 httpServer.listen(env.PORT, () => {
   logger.info(`Beaverr API running on port ${env.PORT}`);

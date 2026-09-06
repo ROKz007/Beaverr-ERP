@@ -22,8 +22,10 @@ export function initSocket(httpServer: HttpServer) {
   });
 
   io.on("connection", (socket) => {
+    const user = socket.data.user as AccessTokenPayload;
+    socket.join(`user:${user.userId}`);
+
     socket.on("booking:subscribe", async (bookingId: string) => {
-      const user = socket.data.user as AccessTokenPayload;
       const booking = await bookingsRepository.findById(user.societyId, bookingId);
       if (!booking) return;
       const isAdmin = ADMIN_ROLES.has(user.role);
@@ -37,4 +39,8 @@ export function initSocket(httpServer: HttpServer) {
 
 export function emitBookingUpdate(bookingId: string, payload: unknown) {
   io?.to(`booking:${bookingId}`).emit("booking:update", payload);
+}
+
+export function emitNotification(userId: string, payload: unknown) {
+  io?.to(`user:${userId}`).emit("notification:new", payload);
 }

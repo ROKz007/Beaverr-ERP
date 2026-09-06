@@ -48,6 +48,12 @@ Beaverr's `/docs` describe an enterprise-grade, multi-tenant society management 
 
 `grievances` (lifecycle, escalation), `visitors` (QR, walk-in, blacklist — via Gate Console), `notifications` (in-app + email only). Resident-web + admin-web pages for both.
 
+- [x] `grievances` module — create/list/detail, admin assign + status lifecycle (`OPEN→IN_REVIEW→RESOLVED→CLOSED`), anonymous redaction, SLA escalation via BullMQ.
+- [x] `visitors` + Gate Console — resident pre-approve (QR code) + approve/deny; guard walk-in/scan/exit; admin visitor log + blacklist.
+- [x] `notifications` module — in-app inbox, preferences, pluggable email provider (console default), shared by grievances/visitors/bookings-SLA.
+- [x] Resident-web: grievances, visitors, notifications pages.
+- [x] Admin-web: grievances table, Gate Console page.
+
 ## Phase 4 — Money & basic reporting
 
 `payments` (Razorpay test mode, webhooks, invoicing, dues/reminders), `analytics` (dashboard + reports straight from Postgres).

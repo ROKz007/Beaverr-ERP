@@ -16,8 +16,11 @@ Actively in development. Built so far:
 - **Bookings & workers** — booking state machine, BullMQ-backed SLA tracking, rule-based worker auto-assign, worker profiles/reputation scoring; resident-web catalogue browsing, booking flow, and live booking tracking (Socket.io) are built.
 - **Admin-web management tables** — residents, units, services, workers, and bookings (with manual worker-assign) tables.
 - **Hosted Postgres ready** — Supabase available as a deployment target alongside local Docker Postgres for dev.
+- **Grievances** — complaint lifecycle (open → in review → resolved → closed), anonymous complaints, SLA escalation.
+- **Visitors & Gate Console** — resident QR pre-approval, guard walk-in/scan/exit, blacklist enforcement, admin visitor log.
+- **Notifications** — in-app inbox + pluggable email provider, used across grievances/visitors/bookings.
 
-Phase 2 (core service loop) is done. Not yet started: grievances, visitor management, notifications, payments, analytics, and the Phase 5 stretch features (events/announcements/documents/forum). See `docs/Implementation Plan.md` for the full phase breakdown.
+Phases 1–3 are done. Not yet started: payments, analytics, and the Phase 5 stretch features (events/announcements/documents/forum). See `docs/Implementation Plan.md` for the full phase breakdown.
 
 ## MVP scope
 
