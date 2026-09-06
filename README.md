@@ -8,7 +8,7 @@ The long-term vision (fully documented in `/docs`) is a complete multi-tenant Sa
 
 ## Current status
 
-Actively in development. Built so far:
+All 5 MVP phases are built. Built so far:
 
 - **Foundations** — multi-tenant Postgres schema (Prisma), Redis-backed sessions/rate-limits, JWT auth with OTP login (residents/admins) and username+password login (guards), RBAC + tenancy middleware, a demo society/admin/guard/resident seed.
 - **Resident & admin web apps** — real Next.js 15 apps (not stubs): login/OTP/register flows, guard desk login, authenticated dashboard shells, shared component library.
@@ -21,8 +21,9 @@ Actively in development. Built so far:
 - **Notifications** — in-app inbox + pluggable email provider, used across grievances/visitors/bookings.
 - **Payments & dues** — Razorpay test-mode orders, signature-verified webhook, BullMQ due reminders; resident payments page (pay via Razorpay Checkout), admin payments page + dashboard stats.
 - **Basic analytics** — admin dashboard cards (open requests, pending grievances, visitors today, dues) straight from Postgres.
+- **Community** — events (RSVP + headcount), announcements (read receipts for critical ones), documents, and a moderated community forum; one tabbed "Community" page per app.
 
-Phases 1–4 are done. Not yet started: the Phase 5 stretch features (events/announcements/documents/forum). See `docs/Implementation Plan.md` for the full phase breakdown.
+All 5 MVP phases (see table below) are done. Remaining work is entirely 🔮 *Post-MVP* — see `docs/Implementation Plan.md` for the full phase breakdown.
 
 > Payments note: the Razorpay integration is code-complete and signature-verification is live-tested, but order-creation/Checkout.js itself hasn't been exercised against a real Razorpay account (none available yet) — see `RAZORPAY_KEY_ID`/`RAZORPAY_KEY_SECRET`/`RAZORPAY_WEBHOOK_SECRET` in `.env.example`.
 

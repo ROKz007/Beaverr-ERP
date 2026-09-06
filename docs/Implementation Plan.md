@@ -67,6 +67,12 @@ Beaverr's `/docs` describe an enterprise-grade, multi-tenant society management 
 
 Events board, announcements, documents, community forum.
 
+- [x] `events` module — create/list/RSVP, headcount tracking.
+- [x] `announcements` module — create/list, read receipts for critical circulars.
+- [x] `documents` module — publish/list (hosted URLs, no upload pipeline).
+- [x] `forum` module — threads/replies, admin flag/remove moderation.
+- [x] Resident-web + admin-web: single tabbed "Community" page per app (Events/Announcements/Documents/Forum).
+
 ## Explicitly deferred (Future Extensions in docs, not built now)
 
 Marketplace/Community Economy Layer, real ML-based AI microservice, `mobile-app` + `guard-app` (Expo), Digio/Signzy KYC, WhatsApp Business API, Mixpanel, Kubernetes + Terraform, Meilisearch/TimescaleDB/pgvector, OpenTelemetry, full Prometheus/Grafana/Loki stack.

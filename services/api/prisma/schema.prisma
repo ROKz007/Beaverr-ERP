@@ -83,6 +83,14 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum ForumCategory {
+  FOR_SALE
+  LOST_FOUND
+  CARPOOL
+  RECOMMENDATIONS
+  GENERAL
+}
+
 model Society {
   id                String   @id @default(cuid())
   name              String
@@ -106,6 +114,10 @@ model Society {
   visitors      Visitor[]
   payments      Payment[]
   notifications Notification[]
+  events        Event[]
+  announcements Announcement[]
+  documents     Document[]
+  forumThreads  ForumThread[]
 }
 
 model User {
@@ -313,4 +325,114 @@ model NotificationPreference {
   inApp  Boolean @default(true)
 
   user User @relation(fields: [userId], references: [id])
+}
+
+// Phase 5 (stretch) — kept deliberately minimal, no docs Prisma sketch existed for these (unlike
+// Payment). No rich text/attachments/polls — no storage backend wired for MVP, same trim as
+// Grievance.mediaUrls/Document.url below (plain hosted URLs, not an upload pipeline).
+
+model Event {
+  id              String    @id @default(cuid())
+  societyId       String
+  title           String
+  description     String
+  category        String
+  startAt         DateTime
+  endAt           DateTime?
+  createdByUserId String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  society Society     @relation(fields: [societyId], references: [id])
+  rsvps   EventRsvp[]
+
+  @@index([societyId])
+}
+
+model EventRsvp {
+  id        String   @id @default(cuid())
+  eventId   String
+  userId    String
+  headcount Int      @default(1)
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@unique([eventId, userId])
+  @@index([userId])
+}
+
+model Announcement {
+  id              String    @id @default(cuid())
+  societyId       String
+  title           String
+  body            String
+  isCritical      Boolean   @default(false)
+  createdByUserId String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  society      Society                   @relation(fields: [societyId], references: [id])
+  readReceipts AnnouncementReadReceipt[]
+
+  @@index([societyId])
+}
+
+model AnnouncementReadReceipt {
+  id             String   @id @default(cuid())
+  announcementId String
+  userId         String
+  readAt         DateTime @default(now())
+
+  announcement Announcement @relation(fields: [announcementId], references: [id])
+
+  @@unique([announcementId, userId])
+  @@index([userId])
+}
+
+model Document {
+  id               String   @id @default(cuid())
+  societyId        String
+  title            String
+  url              String
+  category         String
+  uploadedByUserId String
+  createdAt        DateTime @default(now())
+
+  society Society @relation(fields: [societyId], references: [id])
+
+  @@index([societyId])
+}
+
+model ForumThread {
+  id           String        @id @default(cuid())
+  societyId    String
+  category     ForumCategory
+  title        String
+  body         String
+  authorUserId String
+  isFlagged    Boolean       @default(false)
+  isRemoved    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  society Society      @relation(fields: [societyId], references: [id])
+  replies ForumReply[]
+
+  @@index([societyId])
+}
+
+model ForumReply {
+  id           String   @id @default(cuid())
+  threadId     String
+  body         String
+  authorUserId String
+  isRemoved    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  thread ForumThread @relation(fields: [threadId], references: [id])
+
+  @@index([threadId])
 }

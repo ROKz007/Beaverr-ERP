@@ -8,4 +8,5 @@ export * from "./notification.types";
 export * from "./grievance.types";
 export * from "./visitor.types";
 export * from "./payment.types";
+export * from "./community.types";
 export * from "./api.types";

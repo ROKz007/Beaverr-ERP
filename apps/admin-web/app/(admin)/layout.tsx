@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { href: "/grievances", label: "Grievances" },
   { href: "/gate-console", label: "Gate Console" },
   { href: "/payments", label: "Payments" },
+  { href: "/community", label: "Community" },
 ];
 
 // TODO: no cookie-based middleware guard yet, same as resident-web. Add later.

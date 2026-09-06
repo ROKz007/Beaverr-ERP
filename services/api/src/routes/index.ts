@@ -11,6 +11,10 @@ import { grievancesRoutes, adminGrievancesRoutes } from "../modules/grievances/g
 import { visitorsRoutes, gateRoutes, adminVisitorsRoutes } from "../modules/visitors/visitors.routes";
 import { paymentsWebhookRoutes, paymentsRoutes, adminPaymentsRoutes } from "../modules/payments/payments.routes";
 import { analyticsRoutes } from "../modules/analytics/analytics.routes";
+import { eventsRoutes, adminEventsRoutes } from "../modules/events/events.routes";
+import { announcementsRoutes, adminAnnouncementsRoutes } from "../modules/announcements/announcements.routes";
+import { documentsRoutes, adminDocumentsRoutes } from "../modules/documents/documents.routes";
+import { forumRoutes, adminForumRoutes } from "../modules/forum/forum.routes";
 
 export const apiRouter = Router();
 
@@ -32,3 +36,11 @@ apiRouter.use("/payments", paymentsWebhookRoutes);
 apiRouter.use("/payments", paymentsRoutes);
 apiRouter.use("/admin/payments", adminPaymentsRoutes);
 apiRouter.use("/admin/analytics", analyticsRoutes);
+apiRouter.use("/events", eventsRoutes);
+apiRouter.use("/admin/events", adminEventsRoutes);
+apiRouter.use("/announcements", announcementsRoutes);
+apiRouter.use("/admin/announcements", adminAnnouncementsRoutes);
+apiRouter.use("/documents", documentsRoutes);
+apiRouter.use("/admin/documents", adminDocumentsRoutes);
+apiRouter.use("/forum", forumRoutes);
+apiRouter.use("/admin/forum", adminForumRoutes);
