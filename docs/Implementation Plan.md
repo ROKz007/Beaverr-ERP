@@ -85,6 +85,15 @@ Full docs-vs-code cross-check, a codebase-wide review, and DB prep for a real te
 - [x] Resident-facing booking reschedule (>4h before, reuses the existing state machine) and a forum "report" action for residents (previously only admin could flag).
 - [x] Local Postgres reset and reseeded with sample data across every module for a clean test run; Supabase left untouched.
 
+## Emergency & SOS module
+
+Flagged during the hardening pass as having fallen through the cracks — built on request rather than deferred.
+
+- [x] Resident SOS + guard security-SOS, both alert every guard/admin in the society (in-app + email, live Socket.io push).
+- [x] Society-wide emergency broadcast (fire, flood, power cut, etc.) — alerts every user in the society.
+- [x] Evacuation drill: start (seeds every unit at unknown), mark units safe/unaccounted, live summary counts, past-events log.
+- [x] Resident-web: always-visible SOS button. Admin-web: `/emergency` page (broadcast, evacuation tracker, guard SOS trigger, live alert banner).
+
 ## Explicitly deferred (Future Extensions in docs, not built now)
 
 Marketplace/Community Economy Layer, real ML-based AI microservice, `mobile-app` + `guard-app` (Expo), Digio/Signzy KYC, WhatsApp Business API, Mixpanel, Kubernetes + Terraform, Meilisearch/TimescaleDB/pgvector, OpenTelemetry, full Prometheus/Grafana/Loki stack.

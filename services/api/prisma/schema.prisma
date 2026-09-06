@@ -91,6 +91,19 @@ enum ForumCategory {
   GENERAL
 }
 
+enum EmergencyEventType {
+  RESIDENT_SOS
+  GUARD_SOS
+  BROADCAST
+  EVACUATION_START
+}
+
+enum EvacuationUnitState {
+  UNKNOWN
+  SAFE
+  UNACCOUNTED
+}
+
 model Society {
   id                String   @id @default(cuid())
   name              String
@@ -118,6 +131,7 @@ model Society {
   announcements Announcement[]
   documents     Document[]
   forumThreads  ForumThread[]
+  emergencyEvents EmergencyEvent[]
 }
 
 model User {
@@ -435,4 +449,38 @@ model ForumReply {
   thread ForumThread @relation(fields: [threadId], references: [id])
 
   @@index([threadId])
+}
+
+// Emergency & SOS — trimmed vs the full docs spec to match available infra: no GPS/maps (a
+// freeform "location" text note instead of real coordinates), no SMS gateway beyond what's already
+// wired for OTP (alerts go through the existing in-app/email notificationsService instead), no
+// radius-based "nearby opted-in residents" targeting (alerts go to guards/admins, not geofenced
+// residents — there's no geolocation infra to make that meaningful anyway).
+
+model EmergencyEvent {
+  id              String              @id @default(cuid())
+  societyId       String
+  type            EmergencyEventType
+  triggeredByUserId String
+  message         String?
+  createdAt       DateTime            @default(now())
+  resolvedAt      DateTime?
+
+  society Society @relation(fields: [societyId], references: [id])
+  units   EvacuationUnitStatus[]
+
+  @@index([societyId])
+}
+
+model EvacuationUnitStatus {
+  id        String              @id @default(cuid())
+  eventId   String
+  unitId    String
+  status    EvacuationUnitState @default(UNKNOWN)
+  updatedAt DateTime            @updatedAt
+
+  event EmergencyEvent @relation(fields: [eventId], references: [id])
+
+  @@unique([eventId, unitId])
+  @@index([eventId])
 }

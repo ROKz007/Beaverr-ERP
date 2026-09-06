@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@repo/ui/button";
 import { useAuthStore } from "../../store/authStore";
+import { SosButton } from "../../components/SosButton";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -55,6 +56,7 @@ export default function ResidentLayout({ children }: { children: React.ReactNode
             })}
           </nav>
           <div className="flex items-center gap-3">
+            <SosButton />
             <span className="hidden text-sm text-muted sm:inline">{user?.name}</span>
             <Button variant="secondary" onClick={logout} className="px-4 py-2 text-xs">
               Log out

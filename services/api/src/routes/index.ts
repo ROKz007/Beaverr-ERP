@@ -15,6 +15,7 @@ import { eventsRoutes, adminEventsRoutes } from "../modules/events/events.routes
 import { announcementsRoutes, adminAnnouncementsRoutes } from "../modules/announcements/announcements.routes";
 import { documentsRoutes, adminDocumentsRoutes } from "../modules/documents/documents.routes";
 import { forumRoutes, adminForumRoutes } from "../modules/forum/forum.routes";
+import { emergencyRoutes, adminEmergencyRoutes } from "../modules/emergency/emergency.routes";
 
 export const apiRouter = Router();
 
@@ -44,3 +45,5 @@ apiRouter.use("/documents", documentsRoutes);
 apiRouter.use("/admin/documents", adminDocumentsRoutes);
 apiRouter.use("/forum", forumRoutes);
 apiRouter.use("/admin/forum", adminForumRoutes);
+apiRouter.use("/emergency", emergencyRoutes);
+apiRouter.use("/admin/emergency", adminEmergencyRoutes);
