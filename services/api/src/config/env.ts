@@ -16,9 +16,13 @@ const envSchema = z.object({
   EMAIL_PROVIDER: z.enum(["console", "smtp"]).default("console"),
   SMTP_URL: z.string().optional(),
   EMAIL_FROM: z.string().default("noreply@beaverr.demo"),
-  RAZORPAY_KEY_ID: z.string().default("rzp_test_placeholder"),
-  RAZORPAY_KEY_SECRET: z.string().default("placeholder"),
-  RAZORPAY_WEBHOOK_SECRET: z.string().default("placeholder_webhook_secret"),
+  // No defaults — these are secrets used for signing/verification. A known placeholder default
+  // would let anyone forge a valid webhook signature if a deployment forgets to set the real one.
+  // Missing/unset means "Razorpay not configured": order creation fails with a clear error and
+  // webhook verification fails closed, rather than silently trusting a public string.
+  RAZORPAY_KEY_ID: z.string().optional(),
+  RAZORPAY_KEY_SECRET: z.string().optional(),
+  RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
   FRONTEND_URLS: z.string().default("http://localhost:3000,http://localhost:3001"),
 });
 

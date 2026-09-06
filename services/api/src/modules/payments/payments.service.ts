@@ -1,9 +1,12 @@
 import { paymentsRepository } from "./payments.repository";
+import { residentsRepository } from "../residents/residents.repository";
+import { unitsRepository } from "../units/units.repository";
 import { schedulePaymentReminders } from "../../queues/payment-reminder.queue";
 import { notificationsService } from "../notifications/notifications.service";
 import { emitPaymentReceived } from "../../realtime/socket";
 import { createOrder, verifyWebhookSignature } from "../../utils/razorpay";
 import { AppError } from "../../utils/AppError";
+import { logger } from "../../utils/logger";
 import type { Pagination } from "../../utils/pagination";
 import type { PaymentStatus, PaymentType } from "@repo/types";
 
@@ -38,6 +41,15 @@ export const paymentsService = {
     societyId: string,
     data: { userId: string; unitId: string; amount: number; type: PaymentType; dueDate?: Date },
   ) {
+    // Both must resolve inside the admin's own society — otherwise an admin could write a due
+    // against a user/unit belonging to a different society entirely.
+    const [resident, unit] = await Promise.all([
+      residentsRepository.findById(societyId, data.userId),
+      unitsRepository.findById(societyId, data.unitId),
+    ]);
+    if (!resident) throw new AppError("NOT_FOUND", "Resident not found in this society.", 404);
+    if (!unit) throw new AppError("NOT_FOUND", "Unit not found in this society.", 404);
+
     const payment = await paymentsRepository.create(societyId, data);
     if (data.dueDate) {
       await schedulePaymentReminders(payment.id, data.dueDate);
@@ -72,8 +84,18 @@ export const paymentsService = {
     const payment = await paymentsRepository.findByGatewayRef(orderId);
     if (!payment) return;
 
+    // updateIfStatus only applies (and returns count 1) if the row is still in the expected
+    // state — makes this handler idempotent against Razorpay retries/replays and stops a stale
+    // event from moving a payment backward out of a later terminal state.
     if (body.event === "payment.captured") {
-      await paymentsRepository.update(payment.id, { status: "PAID", paidAt: new Date() });
+      const updated = await paymentsRepository.updateIfStatus(payment.id, "PENDING", {
+        status: "PAID",
+        paidAt: new Date(),
+      });
+      if (updated === 0) {
+        logger.info(`Ignoring duplicate/stale payment.captured for ${payment.id} (already ${payment.status})`);
+        return;
+      }
       emitPaymentReceived(payment.userId, { paymentId: payment.id, amount: payment.amount });
       await notificationsService.create({
         societyId: payment.societyId,
@@ -83,7 +105,8 @@ export const paymentsService = {
         body: `Your payment of ₹${payment.amount} was received.`,
       });
     } else if (body.event === "payment.failed") {
-      await paymentsRepository.update(payment.id, { status: "FAILED" });
+      const updated = await paymentsRepository.updateIfStatus(payment.id, "PENDING", { status: "FAILED" });
+      if (updated === 0) return;
       await notificationsService.create({
         societyId: payment.societyId,
         userId: payment.userId,
@@ -92,7 +115,7 @@ export const paymentsService = {
         body: `Your payment of ₹${payment.amount} did not go through. Please try again.`,
       });
     } else if (body.event === "refund.processed") {
-      await paymentsRepository.update(payment.id, { status: "REFUNDED" });
+      await paymentsRepository.updateIfStatus(payment.id, "PAID", { status: "REFUNDED" });
     }
   },
 };

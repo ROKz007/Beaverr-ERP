@@ -44,6 +44,18 @@ export const paymentsRepository = {
     return prisma.payment.update({ where: { id }, data });
   },
 
+  /** Only applies the update if the row is still in expectedStatus — makes webhook handling
+   * idempotent against retries/replays and stops a stale event from moving a payment backward
+   * out of a later terminal state. Returns the row count actually updated (0 or 1). */
+  async updateIfStatus(
+    id: string,
+    expectedStatus: PaymentStatus,
+    data: Partial<{ status: PaymentStatus; paidAt: Date }>,
+  ) {
+    const result = await prisma.payment.updateMany({ where: { id, status: expectedStatus }, data });
+    return result.count;
+  },
+
   async summary(societyId: string) {
     const [paid, pending, overdueCount] = await Promise.all([
       prisma.payment.aggregate({ where: { societyId, status: "PAID" }, _sum: { amount: true } }),
