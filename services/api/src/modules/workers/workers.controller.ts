@@ -25,12 +25,12 @@ export const workersController = {
 
   async update(req: Request, res: Response) {
     const body = updateWorkerSchema.parse(req.body);
-    const data = await workersService.update(param(req, "id"), body);
+    const data = await workersService.update(req.societyId!, param(req, "id"), body);
     res.json({ success: true, data });
   },
 
   async remove(req: Request, res: Response) {
-    await workersService.softDelete(param(req, "id"));
+    await workersService.softDelete(req.societyId!, param(req, "id"));
     res.json({ success: true, data: { message: "Worker removed." } });
   },
 };

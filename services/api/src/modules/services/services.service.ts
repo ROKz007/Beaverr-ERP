@@ -18,6 +18,14 @@ export const servicesService = {
   },
 
   create: servicesRepository.create,
-  update: servicesRepository.update,
-  softDelete: servicesRepository.softDelete,
+
+  async update(societyId: string, id: string, data: Parameters<typeof servicesRepository.update>[1]) {
+    await servicesService.getById(societyId, id);
+    return servicesRepository.update(id, data);
+  },
+
+  async softDelete(societyId: string, id: string) {
+    await servicesService.getById(societyId, id);
+    return servicesRepository.softDelete(id);
+  },
 };

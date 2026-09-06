@@ -25,12 +25,12 @@ export const servicesController = {
 
   async update(req: Request, res: Response) {
     const body = updateServiceSchema.parse(req.body);
-    const data = await servicesService.update(param(req, "id"), body);
+    const data = await servicesService.update(req.societyId!, param(req, "id"), body);
     res.json({ success: true, data });
   },
 
   async remove(req: Request, res: Response) {
-    await servicesService.softDelete(param(req, "id"));
+    await servicesService.softDelete(req.societyId!, param(req, "id"));
     res.json({ success: true, data: { message: "Service removed." } });
   },
 };

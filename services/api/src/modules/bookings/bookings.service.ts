@@ -24,13 +24,22 @@ function assertTransition(current: BookingStatus, next: BookingStatus) {
   }
 }
 
+// Admin-web's bookings table needs to show who booked; residents already know that about themselves.
+async function attachResidents<T extends { residentId: string }>(societyId: string, bookings: T[]) {
+  const ids = [...new Set(bookings.map((b) => b.residentId))];
+  const residents = await bookingsRepository.findResidentSummaries(societyId, ids);
+  const byId = new Map(residents.map((r) => [r.id, r]));
+  return bookings.map((b) => ({ ...b, resident: byId.get(b.residentId) ?? null }));
+}
+
 export const bookingsService = {
   async list(
     societyId: string,
     filter: { status?: BookingStatus; serviceId?: string; workerId?: string; residentId?: string },
     pagination: Pagination,
   ) {
-    const [bookings, total] = await bookingsRepository.list(societyId, filter, pagination);
+    const [rawBookings, total] = await bookingsRepository.list(societyId, filter, pagination);
+    const bookings = await attachResidents(societyId, rawBookings);
     return { bookings, total };
   },
 

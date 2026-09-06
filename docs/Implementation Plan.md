@@ -39,7 +39,7 @@ Beaverr's `/docs` describe an enterprise-grade, multi-tenant society management 
 - [x] `bookings` module — state machine, BullMQ-backed SLA engine, rule-based auto-assign.
 - [x] `workers` module — profiles, skills, availability, reputation scoring.
 - [x] Resident-web service catalogue / booking flow / tracking (Socket.io live status).
-- [ ] Admin-web management tables + bookings admin view.
+- [x] Admin-web management tables (residents, units, services, workers, bookings) + manual assign UI.
 - [x] Supabase-hosted Postgres wired as the deployment target (local Docker Postgres stays the dev DB); existing schema replayed and migration bookkeeping synced.
 
 **Reminder for this phase:** keep dense data tables (`TanStack Table` grids, Gate Console) visually minimal and fast — motion/blur belongs on nav, hero, and auth screens, not on screens used many times a day.

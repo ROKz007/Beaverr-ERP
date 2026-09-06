@@ -19,13 +19,13 @@ export const unitsController = {
 
   async update(req: Request, res: Response) {
     const body = updateUnitSchema.parse(req.body);
-    const data = await unitsService.update(param(req, "id"), body);
+    const data = await unitsService.update(req.societyId!, param(req, "id"), body);
     res.json({ success: true, data });
   },
 
   async transfer(req: Request, res: Response) {
     const body = transferUnitSchema.parse(req.body);
-    const data = await unitsService.transfer(param(req, "id"), body);
+    const data = await unitsService.transfer(req.societyId!, param(req, "id"), body);
     res.json({ success: true, data });
   },
 };

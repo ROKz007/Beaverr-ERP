@@ -31,15 +31,18 @@ export const residentsService = {
     return residentsRepository.create(societyId, data);
   },
 
-  update(id: string, data: { name?: string; email?: string; avatarUrl?: string }) {
+  async update(societyId: string, id: string, data: { name?: string; email?: string; avatarUrl?: string }) {
+    await residentsService.getById(societyId, id);
     return residentsRepository.update(id, data);
   },
 
-  suspend(id: string, isActive: boolean) {
+  async suspend(societyId: string, id: string, isActive: boolean) {
+    await residentsService.getById(societyId, id);
     return residentsRepository.setActive(id, isActive);
   },
 
-  softDelete(id: string) {
+  async softDelete(societyId: string, id: string) {
+    await residentsService.getById(societyId, id);
     return residentsRepository.softDelete(id);
   },
 

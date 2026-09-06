@@ -14,11 +14,10 @@ Actively in development. Built so far:
 - **Resident & admin web apps** — real Next.js 15 apps (not stubs): login/OTP/register flows, guard desk login, authenticated dashboard shells, shared component library.
 - **Service catalogue** — backend module for browsing and managing a society's service catalogue (search, categories, admin-managed).
 - **Bookings & workers** — booking state machine, BullMQ-backed SLA tracking, rule-based worker auto-assign, worker profiles/reputation scoring; resident-web catalogue browsing, booking flow, and live booking tracking (Socket.io) are built.
+- **Admin-web management tables** — residents, units, services, workers, and bookings (with manual worker-assign) tables.
 - **Hosted Postgres ready** — Supabase available as a deployment target alongside local Docker Postgres for dev.
 
-In progress: admin-web management tables (services/workers/bookings) and manual assign UI.
-
-Not yet started: grievances, visitor management, notifications, payments, analytics, and the Phase 5 stretch features (events/announcements/documents/forum). See `docs/Implementation Plan.md` for the full phase breakdown.
+Phase 2 (core service loop) is done. Not yet started: grievances, visitor management, notifications, payments, analytics, and the Phase 5 stretch features (events/announcements/documents/forum). See `docs/Implementation Plan.md` for the full phase breakdown.
 
 ## MVP scope
 

@@ -59,4 +59,13 @@ export const bookingsRepository = {
   ) {
     return prisma.serviceBooking.update({ where: { id }, data, include: INCLUDE });
   },
+
+  // No Prisma relation from ServiceBooking.residentId to User (residentId is a plain scalar, see
+  // schema.prisma header note) — batched lookup instead of a schema change for one admin-view join.
+  findResidentSummaries(societyId: string, ids: string[]) {
+    return prisma.user.findMany({
+      where: { id: { in: ids }, societyId },
+      select: { id: true, name: true, phone: true },
+    });
+  },
 };

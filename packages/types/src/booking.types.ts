@@ -22,4 +22,6 @@ export interface ServiceBooking {
   updatedAt: string;
   service: { id: string; name: string; category: string; subCategory: string };
   worker: { id: string; name: string; phone: string; ratingAvg: number } | null;
+  /** Only present on list results (admin-web); resident-web already knows who it is. */
+  resident?: { id: string; name: string; phone: string } | null;
 }

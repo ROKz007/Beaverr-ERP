@@ -17,8 +17,16 @@ export const workersService = {
   },
 
   create: workersRepository.create,
-  update: workersRepository.update,
-  softDelete: workersRepository.softDelete,
+
+  async update(societyId: string, id: string, data: Parameters<typeof workersRepository.update>[1]) {
+    await workersService.getById(societyId, id);
+    return workersRepository.update(id, data);
+  },
+
+  async softDelete(societyId: string, id: string) {
+    await workersService.getById(societyId, id);
+    return workersRepository.softDelete(id);
+  },
 
   /** Moves ratingAvg toward the new rating (EMA) and nudges reputationScore up/down around a rating of 3. */
   async recordRating(worker: { id: string; ratingAvg: number; reputationScore: number }, rating: number) {

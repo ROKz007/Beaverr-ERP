@@ -20,11 +20,13 @@ export const unitsService = {
     return unitsRepository.create(societyId, data);
   },
 
-  update(id: string, data: Parameters<typeof unitsRepository.update>[1]) {
+  async update(societyId: string, id: string, data: Parameters<typeof unitsRepository.update>[1]) {
+    await unitsService.getById(societyId, id);
     return unitsRepository.update(id, data);
   },
 
-  transfer(id: string, data: { ownerUserId?: string; tenantUserId?: string }) {
+  async transfer(societyId: string, id: string, data: { ownerUserId?: string; tenantUserId?: string }) {
+    await unitsService.getById(societyId, id);
     return unitsRepository.transfer(id, data);
   },
 };

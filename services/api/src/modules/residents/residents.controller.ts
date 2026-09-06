@@ -25,18 +25,18 @@ export const residentsController = {
 
   async update(req: Request, res: Response) {
     const body = updateResidentSchema.parse(req.body);
-    const data = await residentsService.update(param(req, "id"), body);
+    const data = await residentsService.update(req.societyId!, param(req, "id"), body);
     res.json({ success: true, data });
   },
 
   async suspend(req: Request, res: Response) {
     const { isActive } = suspendResidentSchema.parse(req.body);
-    const data = await residentsService.suspend(param(req, "id"), isActive);
+    const data = await residentsService.suspend(req.societyId!, param(req, "id"), isActive);
     res.json({ success: true, data });
   },
 
   async remove(req: Request, res: Response) {
-    await residentsService.softDelete(param(req, "id"));
+    await residentsService.softDelete(req.societyId!, param(req, "id"));
     res.json({ success: true, data: { message: "Resident removed." } });
   },
 
