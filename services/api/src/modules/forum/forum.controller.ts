@@ -35,6 +35,11 @@ export const forumController = {
     res.status(201).json({ success: true, data });
   },
 
+  async report(req: Request, res: Response) {
+    await forumService.report(req.societyId!, param(req, "id"));
+    res.json({ success: true, data: { message: "Thread reported to moderators." } });
+  },
+
   async setFlag(req: Request, res: Response) {
     const body = flagThreadSchema.parse(req.body);
     const data = await forumService.setFlag(req.societyId!, param(req, "id"), body.isFlagged);

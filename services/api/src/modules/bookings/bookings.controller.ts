@@ -6,6 +6,7 @@ import {
   updateStatusSchema,
   assignWorkerSchema,
   rateBookingSchema,
+  rescheduleSchema,
 } from "./bookings.validator";
 import { parsePagination } from "../../utils/pagination";
 import { param } from "../../utils/params";
@@ -47,6 +48,12 @@ export const bookingsController = {
   async updateStatus(req: Request, res: Response) {
     const body = updateStatusSchema.parse(req.body);
     const data = await bookingsService.updateStatus(req.societyId!, param(req, "id"), body.status, body.scheduledAt);
+    res.json({ success: true, data });
+  },
+
+  async reschedule(req: Request, res: Response) {
+    const body = rescheduleSchema.parse(req.body);
+    const data = await bookingsService.reschedule(req.societyId!, param(req, "id"), req.user!.userId, body.scheduledAt);
     res.json({ success: true, data });
   },
 

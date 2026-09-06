@@ -18,7 +18,7 @@ export function EventsTab() {
   const [startAt, setStartAt] = useState("");
 
   async function load() {
-    const { data } = await api.get("/api/events");
+    const { data } = await api.get("/api/events", { params: { includePast: true, limit: 100 } });
     setEvents(data.data);
   }
 
@@ -28,7 +28,11 @@ export function EventsTab() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
-    await api.post("/api/admin/events", { title, description, category, startAt });
+    // datetime-local gives a naive local-time string (no offset) — new Date(...) parses it as the
+    // admin's browser-local time, then .toISOString() makes it an unambiguous absolute instant
+    // before it crosses the wire, instead of letting the server reinterpret the naive string in
+    // whatever timezone the server process happens to run in.
+    await api.post("/api/admin/events", { title, description, category, startAt: new Date(startAt).toISOString() });
     setTitle("");
     setDescription("");
     setCategory("");

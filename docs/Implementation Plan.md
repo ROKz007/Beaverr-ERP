@@ -73,6 +73,18 @@ Events board, announcements, documents, community forum.
 - [x] `forum` module — threads/replies, admin flag/remove moderation.
 - [x] Resident-web + admin-web: single tabbed "Community" page per app (Events/Announcements/Documents/Forum).
 
+## Final-stretch hardening pass
+
+Full docs-vs-code cross-check, a codebase-wide review, and DB prep for a real test run.
+
+- [x] Fixed a systemic validation bug: `zod`'s `.partial()` on a schema with `.default()` fields silently resets those fields on any partial update that omits them — found in `announcements`, `services`, and `workers` (the last was live and high-impact: admin-web's verify/available toggle buttons each flip one field, silently resetting the other).
+- [x] Fixed a forum moderation bypass (removed threads stayed viewable/repliable by id), an unhandled Prisma error on double-cancelling an RSVP, N+1 queries in two Phase 5 list endpoints, events never filtering out past events, and a `datetime-local` timezone mismatch between browser and server.
+- [x] Resident-web dashboard: real stat tiles instead of a leftover Phase-1 placeholder.
+- [x] Admin-web: `/settings` page for the previously-frontend-less `societies` module (profile, gate module, departments).
+- [x] Redis-backed rate limiting + Winston-based admin audit logging, both mounted globally.
+- [x] Resident-facing booking reschedule (>4h before, reuses the existing state machine) and a forum "report" action for residents (previously only admin could flag).
+- [x] Local Postgres reset and reseeded with sample data across every module for a clean test run; Supabase left untouched.
+
 ## Explicitly deferred (Future Extensions in docs, not built now)
 
 Marketplace/Community Economy Layer, real ML-based AI microservice, `mobile-app` + `guard-app` (Expo), Digio/Signzy KYC, WhatsApp Business API, Mixpanel, Kubernetes + Terraform, Meilisearch/TimescaleDB/pgvector, OpenTelemetry, full Prometheus/Grafana/Loki stack.

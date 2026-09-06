@@ -12,14 +12,14 @@ function withCount<T extends { _count: { rsvps: number } }>(event: T) {
 }
 
 export const eventsService = {
-  async list(societyId: string, userId: string, pagination: Pagination) {
-    const [rawEvents, total] = await eventsRepository.list(societyId, pagination);
-    const events = await Promise.all(
-      rawEvents.map(async (e) => {
-        const mine = await eventsRepository.findMyRsvp(e.id, userId);
-        return { ...withCount(e), myHeadcount: mine?.headcount ?? null };
-      }),
+  async list(societyId: string, userId: string, pagination: Pagination, includePast = false) {
+    const [rawEvents, total] = await eventsRepository.list(societyId, pagination, includePast);
+    const myRsvps = await eventsRepository.findMyRsvpsForEvents(
+      userId,
+      rawEvents.map((e) => e.id),
     );
+    const headcountByEvent = new Map(myRsvps.map((r) => [r.eventId, r.headcount]));
+    const events = rawEvents.map((e) => ({ ...withCount(e), myHeadcount: headcountByEvent.get(e.id) ?? null }));
     return { events, total };
   },
 
@@ -55,6 +55,8 @@ export const eventsService = {
 
   async cancelRsvp(societyId: string, id: string, userId: string) {
     await eventsService.assertExists(societyId, id);
+    const existing = await eventsRepository.findMyRsvp(id, userId);
+    if (!existing) return null; // idempotent — no RSVP to cancel is a no-op, not an error
     return eventsRepository.deleteRsvp(id, userId);
   },
 };

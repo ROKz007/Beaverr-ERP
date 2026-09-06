@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import { env } from "./config/env";
 import { apiRouter } from "./routes/index";
 import { errorHandler } from "./middleware/error.middleware";
+import { rateLimiter } from "./middleware/rate-limit.middleware";
+import { auditLogger } from "./middleware/audit-log.middleware";
 
 const app = express();
 
@@ -19,7 +21,7 @@ app.get("/health", (_req, res) => {
   res.json({ status: "Beaverr API running" });
 });
 
-app.use("/api", apiRouter);
+app.use("/api", rateLimiter, auditLogger, apiRouter);
 
 app.use(errorHandler);
 

@@ -20,6 +20,7 @@ export function ForumTab() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [replyBody, setReplyBody] = useState("");
+  const [reported, setReported] = useState(false);
 
   async function load() {
     const { data } = await api.get("/api/forum/threads");
@@ -34,6 +35,7 @@ export function ForumTab() {
   async function openThread(id: string) {
     const { data } = await api.get(`/api/forum/threads/${id}`);
     setSelected(data.data);
+    setReported(false);
   }
 
   async function createThread(e: React.FormEvent) {
@@ -53,6 +55,12 @@ export function ForumTab() {
     openThread(selected.id);
   }
 
+  async function report() {
+    if (!selected) return;
+    await api.post(`/api/forum/threads/${selected.id}/report`);
+    setReported(true);
+  }
+
   if (selected) {
     return (
       <div className="flex flex-col gap-6">
@@ -61,9 +69,18 @@ export function ForumTab() {
         </button>
         <Card>
           <div className="flex flex-col gap-4 p-6">
-            <span className="w-fit rounded-full bg-black/[0.04] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-muted">
-              {selected.category}
-            </span>
+            <div className="flex items-center justify-between">
+              <span className="w-fit rounded-full bg-black/[0.04] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-muted">
+                {selected.category}
+              </span>
+              <button
+                onClick={report}
+                disabled={reported}
+                className="text-xs text-muted hover:text-destructive disabled:text-muted"
+              >
+                {reported ? "Reported" : "Report"}
+              </button>
+            </div>
             <h2 className="font-heading text-xl font-semibold text-primary">{selected.title}</h2>
             <p className="text-sm text-muted">{selected.body}</p>
           </div>

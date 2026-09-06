@@ -12,6 +12,7 @@ bookingsRoutes.use(requireAuth, injectSocietyId);
 bookingsRoutes.get("/", bookingsController.list);
 bookingsRoutes.get("/:id", bookingsController.getById);
 bookingsRoutes.post("/", bookingsController.create);
+bookingsRoutes.patch("/:id/reschedule", bookingsController.reschedule);
 bookingsRoutes.post("/:id/cancel", bookingsController.cancel);
 bookingsRoutes.post("/:id/rate", bookingsController.rate);
 

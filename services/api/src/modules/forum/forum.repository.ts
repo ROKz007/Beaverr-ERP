@@ -31,9 +31,17 @@ export const forumRepository = {
     ]);
   },
 
+  // Unrestricted — for admin tenancy checks (flag/remove) that must still find an already-removed
+  // thread (idempotent re-removal, unflagging, etc). Residents never see this path.
   findThreadById(societyId: string, id: string) {
+    return prisma.forumThread.findFirst({ where: { id, societyId } });
+  },
+
+  // Resident-facing — excludes removed threads so a bookmarked/notified/previously-shared thread id
+  // can't be used to keep viewing or replying to something moderation shut down.
+  findVisibleThreadById(societyId: string, id: string) {
     return prisma.forumThread.findFirst({
-      where: { id, societyId },
+      where: { id, societyId, isRemoved: false },
       include: { replies: { where: { isRemoved: false }, orderBy: { createdAt: "asc" } } },
     });
   },

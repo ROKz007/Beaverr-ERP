@@ -27,7 +27,10 @@ export default function ServiceDetailPage() {
     setError(null);
     setSubmitting(true);
     try {
-      const { data } = await api.post("/api/bookings", { serviceId: id, scheduledAt });
+      // new Date(scheduledAt) parses the naive datetime-local string as the resident's browser-local
+      // time; .toISOString() turns it into an unambiguous absolute instant before it's sent, so the
+      // server doesn't reinterpret it in whatever timezone the API process happens to run in.
+      const { data } = await api.post("/api/bookings", { serviceId: id, scheduledAt: new Date(scheduledAt).toISOString() });
       router.push(`/bookings/${data.data.id}`);
     } catch (err: any) {
       setError(err.response?.data?.error?.message ?? "Something went wrong.");

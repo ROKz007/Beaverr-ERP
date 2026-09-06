@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
 import type { ServiceBooking, BookingStatus } from "@repo/types";
 import { api } from "../../../../lib/api";
 import { getSocket } from "../../../../lib/socket";
@@ -30,6 +31,8 @@ export default function BookingTrackingPage() {
   const [ratingNote, setRatingNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showReschedule, setShowReschedule] = useState(false);
+  const [newScheduledAt, setNewScheduledAt] = useState("");
 
   useEffect(() => {
     api.get(`/api/bookings/${id}`).then(({ data }) => setBooking(data.data));
@@ -58,6 +61,23 @@ export default function BookingTrackingPage() {
     }
   }
 
+  async function handleReschedule(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      const { data } = await api.patch(`/api/bookings/${id}/reschedule`, {
+        scheduledAt: new Date(newScheduledAt).toISOString(),
+      });
+      setBooking(data.data);
+      setShowReschedule(false);
+    } catch (err: any) {
+      setError(err.response?.data?.error?.message ?? "Something went wrong.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleRate(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -75,6 +95,9 @@ export default function BookingTrackingPage() {
   if (!booking) return <p className="text-sm text-muted">Loading…</p>;
 
   const canCancel = ["PENDING", "CONFIRMED", "RESCHEDULED"].includes(booking.status);
+  const canReschedule =
+    ["PENDING", "CONFIRMED"].includes(booking.status) &&
+    new Date(booking.scheduledAt).getTime() - Date.now() > 4 * 60 * 60 * 1000;
   const canRate = booking.status === "COMPLETED";
   const currentStep = stepIndex(booking.status);
 
@@ -166,6 +189,33 @@ export default function BookingTrackingPage() {
                 Submit rating
               </Button>
             </form>
+          )}
+
+          {canReschedule && (
+            <div className="border-t border-black/[0.06] pt-6">
+              {showReschedule ? (
+                <form onSubmit={handleReschedule} className="flex flex-col gap-3">
+                  <Input
+                    type="datetime-local"
+                    value={newScheduledAt}
+                    onChange={(e) => setNewScheduledAt(e.target.value)}
+                    required
+                  />
+                  <div className="flex gap-3">
+                    <Button type="submit" disabled={busy} className="px-4 py-2 text-xs">
+                      Confirm new time
+                    </Button>
+                    <Button variant="secondary" type="button" onClick={() => setShowReschedule(false)} className="px-4 py-2 text-xs">
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <Button variant="secondary" onClick={() => setShowReschedule(true)}>
+                  Reschedule
+                </Button>
+              )}
+            </div>
           )}
 
           {canCancel && (

@@ -96,6 +96,26 @@ export const bookingsService = {
     return updated;
   },
 
+  /** Resident self-service — only allowed >4h before the current scheduledAt, per docs. */
+  async reschedule(societyId: string, id: string, residentId: string, scheduledAt: Date) {
+    const booking = await this.getById(societyId, id);
+    if (booking.residentId !== residentId) {
+      throw new AppError("FORBIDDEN", "You can only reschedule your own bookings.", 403);
+    }
+    assertTransition(booking.status, "RESCHEDULED");
+    const fourHoursMs = 4 * 60 * 60 * 1000;
+    if (booking.scheduledAt.getTime() - Date.now() < fourHoursMs) {
+      throw new AppError(
+        "VALIDATION_ERROR",
+        "Bookings can only be rescheduled at least 4 hours before the scheduled time.",
+        400,
+      );
+    }
+    const updated = await bookingsRepository.update(id, { status: "RESCHEDULED", scheduledAt });
+    emitBookingUpdate(id, updated);
+    return updated;
+  },
+
   async cancel(societyId: string, id: string, requesterId: string, isAdmin: boolean) {
     const booking = await this.getById(societyId, id);
     if (!isAdmin && booking.residentId !== requesterId) {

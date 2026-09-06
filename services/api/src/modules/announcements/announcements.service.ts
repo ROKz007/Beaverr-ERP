@@ -5,12 +5,12 @@ import type { Pagination } from "../../utils/pagination";
 export const announcementsService = {
   async list(societyId: string, userId: string, pagination: Pagination) {
     const [rawAnnouncements, total] = await announcementsRepository.list(societyId, pagination);
-    const announcements = await Promise.all(
-      rawAnnouncements.map(async (a) => {
-        const receipt = await announcementsRepository.findMyReceipt(a.id, userId);
-        return { ...a, isRead: Boolean(receipt) };
-      }),
+    const myReceipts = await announcementsRepository.findMyReceiptsForAnnouncements(
+      userId,
+      rawAnnouncements.map((a) => a.id),
     );
+    const readIds = new Set(myReceipts.map((r) => r.announcementId));
+    const announcements = rawAnnouncements.map((a) => ({ ...a, isRead: readIds.has(a.id) }));
     return { announcements, total };
   },
 

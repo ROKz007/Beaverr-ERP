@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const listEventsSchema = z.object({
+  includePast: z.coerce.boolean().optional(),
+});
+
 export const createEventSchema = z.object({
   title: z.string().min(2).max(160),
   description: z.string().min(1).max(2000),

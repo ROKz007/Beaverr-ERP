@@ -14,4 +14,13 @@ export const createWorkerSchema = z.object({
   isAvailable: z.boolean().default(true),
 });
 
-export const updateWorkerSchema = createWorkerSchema.partial();
+// Not createWorkerSchema.partial() — see services.validator.ts's updateServiceSchema comment.
+// Concretely here: admin-web's verify/available toggle buttons each PATCH only the one field they're
+// flipping, so .partial() would silently reset the *other* boolean to its default on every toggle.
+export const updateWorkerSchema = z.object({
+  name: z.string().min(2).max(120).optional(),
+  phone: z.string().min(6).max(20).optional(),
+  skills: z.array(z.string().min(1).max(60)).min(1).optional(),
+  isVerified: z.boolean().optional(),
+  isAvailable: z.boolean().optional(),
+});

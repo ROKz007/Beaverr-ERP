@@ -11,6 +11,7 @@ forumRoutes.get("/threads", forumController.list);
 forumRoutes.get("/threads/:id", forumController.getById);
 forumRoutes.post("/threads", forumController.createThread);
 forumRoutes.post("/threads/:id/replies", forumController.reply);
+forumRoutes.post("/threads/:id/report", forumController.report);
 
 export const adminForumRoutes = Router();
 

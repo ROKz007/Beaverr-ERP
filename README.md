@@ -22,6 +22,7 @@ All 5 MVP phases are built. Built so far:
 - **Payments & dues** — Razorpay test-mode orders, signature-verified webhook, BullMQ due reminders; resident payments page (pay via Razorpay Checkout), admin payments page + dashboard stats.
 - **Basic analytics** — admin dashboard cards (open requests, pending grievances, visitors today, dues) straight from Postgres.
 - **Community** — events (RSVP + headcount), announcements (read receipts for critical ones), documents, and a moderated community forum; one tabbed "Community" page per app.
+- **Hardening pass** — Redis-backed rate limiting + admin audit logging, a `societies` settings page (admin-web), resident-facing booking reschedule and forum reporting, and a full docs-vs-code cross-check + codebase review (see `docs/Implementation Plan.md` for what that turned up and fixed).
 
 All 5 MVP phases (see table below) are done. Remaining work is entirely 🔮 *Post-MVP* — see `docs/Implementation Plan.md` for the full phase breakdown.
 

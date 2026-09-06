@@ -10,8 +10,10 @@ interface EventInput {
 }
 
 export const eventsRepository = {
-  list(societyId: string, pagination: Pagination) {
-    const where = { societyId, deletedAt: null };
+  // includePast: residents only ever want upcoming events (both apps' empty-state copy says "No
+  // upcoming events"); admin-web passes includePast=true to still manage/review past ones.
+  list(societyId: string, pagination: Pagination, includePast = false) {
+    const where = { societyId, deletedAt: null, ...(includePast ? {} : { startAt: { gte: new Date() } }) };
     return prisma.$transaction([
       prisma.event.findMany({
         where,
@@ -45,6 +47,11 @@ export const eventsRepository = {
 
   findMyRsvp(eventId: string, userId: string) {
     return prisma.eventRsvp.findUnique({ where: { eventId_userId: { eventId, userId } } });
+  },
+
+  // Batched — one query for a whole list page instead of one findUnique per event (N+1).
+  findMyRsvpsForEvents(userId: string, eventIds: string[]) {
+    return prisma.eventRsvp.findMany({ where: { userId, eventId: { in: eventIds } } });
   },
 
   upsertRsvp(eventId: string, userId: string, headcount: number) {

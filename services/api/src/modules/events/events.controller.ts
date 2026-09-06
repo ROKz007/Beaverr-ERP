@@ -1,13 +1,14 @@
 import type { Request, Response } from "express";
 import { eventsService } from "./events.service";
-import { createEventSchema, updateEventSchema, rsvpSchema } from "./events.validator";
+import { createEventSchema, updateEventSchema, rsvpSchema, listEventsSchema } from "./events.validator";
 import { parsePagination } from "../../utils/pagination";
 import { param } from "../../utils/params";
 
 export const eventsController = {
   async list(req: Request, res: Response) {
+    const { includePast } = listEventsSchema.parse(req.query);
     const pagination = parsePagination(req.query);
-    const { events, total } = await eventsService.list(req.societyId!, req.user!.userId, pagination);
+    const { events, total } = await eventsService.list(req.societyId!, req.user!.userId, pagination, includePast);
     res.json({ success: true, data: events, meta: { page: pagination.page, limit: pagination.limit, total } });
   },
 

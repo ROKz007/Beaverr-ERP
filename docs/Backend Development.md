@@ -151,10 +151,11 @@ Every module follows the same 6-file pattern:
 | POST | `/api/auth/verify-otp` | Verify OTP → issue JWT access + refresh tokens | Public |
 | POST | `/api/auth/login` | Login with phone + OTP | Public |
 | POST | `/api/auth/refresh` | Rotate refresh token → new access token | Public |
+| POST | `/api/auth/guard-login` | Guard desk login (username + password, not OTP) | Public |
 | POST | `/api/auth/logout` | Invalidate refresh token in Redis | Auth |
 | GET | `/api/auth/me` | Get current user profile | Auth |
 | PATCH | `/api/auth/me` | Update profile (name, avatar, preferences) | Auth |
-| POST | `/api/auth/change-phone` | Request phone number change (OTP both numbers) | Auth |
+| POST | `/api/auth/change-phone` | Request phone number change (OTP both numbers) | Auth — 🔮 *Post-MVP, not built* |
 
 ### Implementation Notes
 
@@ -606,6 +607,8 @@ All queues backed by Redis. Workers run in separate process from API.
 ---
 
 ## 19. Security & Middleware
+
+> **MVP note (2026-09-06):** `rateLimiter` (Redis-backed, reusing the OTP module's existing INCR/EXPIRE pattern — no new dependency) and `auditLogger` (structured Winston logs for admin mutating actions, not a DB table — matches this project's "Winston-only for MVP" observability trim used elsewhere) are both real and mounted globally in `app.ts`, ahead of `apiRouter`. Unlike the pseudocode below, `requireAuth`/`injectSocietyId`/`requireRole` are **not** mounted globally — each module's own `*.routes.ts` calls them itself, so public endpoints (login, send-otp, validate-code, the Razorpay webhook) simply don't include them rather than needing an exclusion list. `requestLogger` (a general per-request access log) doesn't exist — only errors and audited mutations are logged; add if request-level tracing is ever needed.
 
 ### Middleware Stack (in order)
 ```typescript

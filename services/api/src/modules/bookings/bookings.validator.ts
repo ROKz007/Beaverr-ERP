@@ -26,6 +26,10 @@ export const updateStatusSchema = z.object({
   scheduledAt: z.coerce.date().optional(),
 });
 
+export const rescheduleSchema = z.object({
+  scheduledAt: z.coerce.date(),
+});
+
 export const assignWorkerSchema = z.object({
   workerId: z.string().min(1),
 });

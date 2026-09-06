@@ -36,6 +36,11 @@ export const announcementsRepository = {
     return prisma.announcementReadReceipt.findUnique({ where: { announcementId_userId: { announcementId, userId } } });
   },
 
+  // Batched — one query for a whole list page instead of one findUnique per announcement (N+1).
+  findMyReceiptsForAnnouncements(userId: string, announcementIds: string[]) {
+    return prisma.announcementReadReceipt.findMany({ where: { userId, announcementId: { in: announcementIds } } });
+  },
+
   markRead(announcementId: string, userId: string) {
     return prisma.announcementReadReceipt.upsert({
       where: { announcementId_userId: { announcementId, userId } },
