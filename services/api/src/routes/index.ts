@@ -9,6 +9,8 @@ import { bookingsRoutes } from "../modules/bookings/bookings.routes";
 import { notificationsRoutes } from "../modules/notifications/notifications.routes";
 import { grievancesRoutes, adminGrievancesRoutes } from "../modules/grievances/grievances.routes";
 import { visitorsRoutes, gateRoutes, adminVisitorsRoutes } from "../modules/visitors/visitors.routes";
+import { paymentsWebhookRoutes, paymentsRoutes, adminPaymentsRoutes } from "../modules/payments/payments.routes";
+import { analyticsRoutes } from "../modules/analytics/analytics.routes";
 
 export const apiRouter = Router();
 
@@ -25,3 +27,8 @@ apiRouter.use("/admin/grievances", adminGrievancesRoutes);
 apiRouter.use("/visitors", visitorsRoutes);
 apiRouter.use("/gate", gateRoutes);
 apiRouter.use("/admin/visitors", adminVisitorsRoutes);
+// Webhook router mounted before the authenticated one at the same prefix — see payments.routes.ts.
+apiRouter.use("/payments", paymentsWebhookRoutes);
+apiRouter.use("/payments", paymentsRoutes);
+apiRouter.use("/admin/payments", adminPaymentsRoutes);
+apiRouter.use("/admin/analytics", analyticsRoutes);

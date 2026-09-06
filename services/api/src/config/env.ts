@@ -16,6 +16,9 @@ const envSchema = z.object({
   EMAIL_PROVIDER: z.enum(["console", "smtp"]).default("console"),
   SMTP_URL: z.string().optional(),
   EMAIL_FROM: z.string().default("noreply@beaverr.demo"),
+  RAZORPAY_KEY_ID: z.string().default("rzp_test_placeholder"),
+  RAZORPAY_KEY_SECRET: z.string().default("placeholder"),
+  RAZORPAY_WEBHOOK_SECRET: z.string().default("placeholder_webhook_secret"),
   FRONTEND_URLS: z.string().default("http://localhost:3000,http://localhost:3001"),
 });
 

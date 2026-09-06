@@ -58,6 +58,11 @@ Beaverr's `/docs` describe an enterprise-grade, multi-tenant society management 
 
 `payments` (Razorpay test mode, webhooks, invoicing, dues/reminders), `analytics` (dashboard + reports straight from Postgres).
 
+- [x] `payments` module — dues, Razorpay order + signature-verified webhook (status only ever set from the webhook), BullMQ due reminders (7d/3d/due/overdue).
+- [x] `analytics` module — consolidated admin dashboard endpoint (open bookings, pending grievances, visitors today, dues collected/outstanding/overdue), straight Postgres aggregates.
+- [x] Resident-web: payments page (dues, pay via Razorpay Checkout, history).
+- [x] Admin-web: payments page (create due, table, summary cards) + real stats wired into the dashboard.
+
 ## Phase 5 — Stretch (only if time remains)
 
 Events board, announcements, documents, community forum.

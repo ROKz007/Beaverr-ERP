@@ -19,8 +19,12 @@ Actively in development. Built so far:
 - **Grievances** — complaint lifecycle (open → in review → resolved → closed), anonymous complaints, SLA escalation.
 - **Visitors & Gate Console** — resident QR pre-approval, guard walk-in/scan/exit, blacklist enforcement, admin visitor log.
 - **Notifications** — in-app inbox + pluggable email provider, used across grievances/visitors/bookings.
+- **Payments & dues** — Razorpay test-mode orders, signature-verified webhook, BullMQ due reminders; resident payments page (pay via Razorpay Checkout), admin payments page + dashboard stats.
+- **Basic analytics** — admin dashboard cards (open requests, pending grievances, visitors today, dues) straight from Postgres.
 
-Phases 1–3 are done. Not yet started: payments, analytics, and the Phase 5 stretch features (events/announcements/documents/forum). See `docs/Implementation Plan.md` for the full phase breakdown.
+Phases 1–4 are done. Not yet started: the Phase 5 stretch features (events/announcements/documents/forum). See `docs/Implementation Plan.md` for the full phase breakdown.
+
+> Payments note: the Razorpay integration is code-complete and signature-verification is live-tested, but order-creation/Checkout.js itself hasn't been exercised against a real Razorpay account (none available yet) — see `RAZORPAY_KEY_ID`/`RAZORPAY_KEY_SECRET`/`RAZORPAY_WEBHOOK_SECRET` in `.env.example`.
 
 ## MVP scope
 

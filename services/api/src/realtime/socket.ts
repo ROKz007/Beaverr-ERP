@@ -44,3 +44,7 @@ export function emitBookingUpdate(bookingId: string, payload: unknown) {
 export function emitNotification(userId: string, payload: unknown) {
   io?.to(`user:${userId}`).emit("notification:new", payload);
 }
+
+export function emitPaymentReceived(userId: string, payload: unknown) {
+  io?.to(`user:${userId}`).emit("payment:received", payload);
+}

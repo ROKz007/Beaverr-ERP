@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/bookings", label: "My Bookings" },
   { href: "/grievances", label: "Grievances" },
   { href: "/visitors", label: "Visitors" },
+  { href: "/payments", label: "Payments" },
   { href: "/notifications", label: "Notifications" },
 ];
 
