@@ -1,3 +1,5 @@
+# Local dev only. Supabase (project "Beaverr DB", ref yetagnkiyrwntwzrtami) holds the same schema
+# for later deployment — see docs/implementation_plan.md. Don't point local DATABASE_URL at it.
 services:
   postgres:
     image: postgres:16

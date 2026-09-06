@@ -36,10 +36,11 @@ Beaverr's `/docs` describe an enterprise-grade, multi-tenant society management 
 `services` (catalogue, Postgres search), `bookings` (state machine, SLA engine via BullMQ, rule-based auto-assign), `workers` (profiles, scheduling, reputation score). Resident-web service catalogue/booking flow/tracking (Socket.io status, no live GPS map). Admin-web residents/units/services/workers tables, bookings admin view + manual assign.
 
 - [x] `services` module — catalogue CRUD, Postgres full-text-style search (name/description/subcategory), category filter, pagination. Catalogue browsing open to any authenticated role; create/update/delete gated to admins.
-- [ ] `bookings` module — state machine, SLA engine, auto-assign.
-- [ ] `workers` module — profiles, scheduling, reputation score.
-- [ ] Resident-web service catalogue / booking flow / tracking.
+- [x] `bookings` module — state machine, BullMQ-backed SLA engine, rule-based auto-assign.
+- [x] `workers` module — profiles, skills, availability, reputation scoring.
+- [x] Resident-web service catalogue / booking flow / tracking (Socket.io live status).
 - [ ] Admin-web management tables + bookings admin view.
+- [x] Supabase-hosted Postgres wired as the deployment target (local Docker Postgres stays the dev DB); existing schema replayed and migration bookkeeping synced.
 
 **Reminder for this phase:** keep dense data tables (`TanStack Table` grids, Gate Console) visually minimal and fast — motion/blur belongs on nav, hero, and auth screens, not on screens used many times a day.
 

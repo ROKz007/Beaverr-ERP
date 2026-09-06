@@ -662,7 +662,7 @@ Resident lists a service or item
 
 | Store | Technology | Purpose |
 |---|---|---|
-| Primary DB | PostgreSQL 16 | All relational data — residents, bookings, payments, grievances |
+| Primary DB | PostgreSQL 16 (local Docker for dev, Supabase-hosted Postgres for deployment) | All relational data — residents, bookings, payments, grievances |
 | ORM | Prisma | Type-safe migrations and queries |
 | Multi-tenancy | Row-Level Security (RLS) on `society_id` | Data isolation between societies |
 | Cache & Sessions | Redis 7 | Sessions, OTP, rate limiting, BullMQ queues |
@@ -940,7 +940,7 @@ npm run seed
 |---|---|---|
 | Resident & Admin Frontend | Vercel | Free tier |
 | Backend API | Render.com | Free tier |
-| PostgreSQL | Supabase | Free tier (500 MB) |
+| PostgreSQL | Supabase ✅ *decided & wired* | Free tier (500 MB) |
 | Redis | Upstash | Free tier (10,000 commands/day) |
 | Search | 🔮 *Post-MVP:* Meilisearch Cloud | Free tier |
 | Storage | Cloudflare R2 | Free (10 GB) |

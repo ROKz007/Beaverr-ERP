@@ -24,7 +24,11 @@ export function createApiClient(baseURL: string) {
     },
   );
 
-  return { client, setAccessToken: (token: string | null) => (accessToken = token) };
+  return {
+    client,
+    setAccessToken: (token: string | null) => (accessToken = token),
+    getAccessToken: () => accessToken,
+  };
 }
 
 export type ApiClient = ReturnType<typeof createApiClient>["client"];

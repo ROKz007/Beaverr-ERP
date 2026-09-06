@@ -13,8 +13,10 @@ Actively in development. Built so far:
 - **Foundations** — multi-tenant Postgres schema (Prisma), Redis-backed sessions/rate-limits, JWT auth with OTP login (residents/admins) and username+password login (guards), RBAC + tenancy middleware, a demo society/admin/guard/resident seed.
 - **Resident & admin web apps** — real Next.js 15 apps (not stubs): login/OTP/register flows, guard desk login, authenticated dashboard shells, shared component library.
 - **Service catalogue** — backend module for browsing and managing a society's service catalogue (search, categories, admin-managed).
+- **Bookings & workers** — booking state machine, BullMQ-backed SLA tracking, rule-based worker auto-assign, worker profiles/reputation scoring; resident-web catalogue browsing, booking flow, and live booking tracking (Socket.io) are built.
+- **Hosted Postgres ready** — Supabase available as a deployment target alongside local Docker Postgres for dev.
 
-In progress: booking flow (state machine + SLA tracking + auto-assign), worker profiles/reputation, and the corresponding resident/admin UI.
+In progress: admin-web management tables (services/workers/bookings) and manual assign UI.
 
 Not yet started: grievances, visitor management, notifications, payments, analytics, and the Phase 5 stretch features (events/announcements/documents/forum). See `docs/Implementation Plan.md` for the full phase breakdown.
 
@@ -35,7 +37,7 @@ Everything beyond MVP (service marketplace/community economy layer, ML-based AI 
 ## Tech stack
 
 - **Frontend:** Next.js 15, TypeScript, Tailwind CSS, Zustand
-- **Backend:** Node.js/Express, Prisma ORM, PostgreSQL, Redis, BullMQ
+- **Backend:** Node.js/Express, Prisma ORM, PostgreSQL (Supabase-hosted for deployment, local Docker for dev), Redis, BullMQ
 - **Auth:** JWT (access + refresh), phone+OTP for residents/admins, username+password for guards
 - **Monorepo:** Turborepo + pnpm workspaces
 
@@ -75,6 +77,8 @@ pnpm --filter admin-web dev    # :3001
 ```
 
 The seed script creates a demo society, admin, guard, and resident account — see `services/api/prisma/seed.ts` for credentials.
+
+For deployment, point `DATABASE_URL` (pooled) and `DIRECT_URL` (unpooled, used for migrations) at a hosted Postgres provider — Supabase is the current target. Local dev is unaffected either way.
 
 ## Docs
 
